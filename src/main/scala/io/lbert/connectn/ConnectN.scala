@@ -2,9 +2,19 @@ package io.lbert.connectn
 
 object ConnectN {
 
-  sealed trait GamePiece
+  sealed trait GamePiece {
+    def getOther: GamePiece = this match {
+      case Red   => Black
+      case Black => Red
+    }
+  }
   case object Red extends GamePiece
   case object Black extends GamePiece
+
+  sealed trait MoveOutcome
+  case class InvalidMove(state: GameState, piece: GamePiece, column: Int) extends MoveOutcome
+  case class NextMove(state: GameState, nextPiece: GamePiece) extends MoveOutcome
+  case class GameOver(state: GameState, winningPiece: GamePiece) extends MoveOutcome
 
   case class Board(height: Int, width: Int, inARow: Int = 4)
 
@@ -12,10 +22,21 @@ object ConnectN {
 
   case class GameState(board: Board, pieces: Seq[(Coord,GamePiece)] = Seq())
 
-  def play(state: GameState, column: Int, piece: GamePiece): Option[GameState] =
-    getNextRow(state,column).map(nextRow =>
-      state.copy(pieces = state.pieces ++ Seq(Coord(column,nextRow) -> piece))
-    )
+  def play(state: GameState, column: Int, piece: GamePiece): MoveOutcome =
+    placePiece(state,column,piece) match {
+      case None => InvalidMove(state, piece, column)
+      case Some(newState) if isGameOver(newState) =>
+        GameOver(newState, piece)
+      case Some(newState) =>
+        NextMove(newState, piece.getOther)
+    }
+
+  def placePiece(state: GameState, column: Int, piece: GamePiece): Option[GameState] =
+    if(column < state.board.width) {
+      getNextRow(state, column).map(nextRow =>
+        state.copy(pieces = state.pieces ++ Seq(Coord(column, nextRow) -> piece))
+      )
+    } else None
 
   def getNextRow(state: GameState, column: Int): Option[Int] = {
     val count = state.pieces.count(_._1.x == column)

@@ -1,6 +1,7 @@
 package io.lbert.connectn
 
 import io.lbert.connectn.ConnectN._
+import scala.io.AnsiColor
 import scala.util.{Failure, Success, Try}
 
 object ConnectNASCII extends App {
@@ -10,6 +11,11 @@ object ConnectNASCII extends App {
                         red: String = "R",
                         black: String = "B",
                         separator: String = "|")
+
+  val colorChars = ASCIIChars(
+    blank = "0",
+    red = AnsiColor.RED + "0" + AnsiColor.RESET,
+    black = AnsiColor.BLUE + "0" + AnsiColor.RESET)
 
   def draw(state: GameState, chars: ASCIIChars): Seq[String] = {
     val pieceMap = state.pieces.toMap
@@ -25,15 +31,25 @@ object ConnectNASCII extends App {
   }
 
   def run(state: GameState): Unit = {
-    val board = draw(state,ASCIIChars())
+    val board = draw(state,colorChars)
     println()
     println(board.mkString("\n"))
     println()
     val piece = nextPiece(state)
     print(s"Enter column for $piece: ")
-    Try(scala.io.StdIn.readInt()) match {
-      case Success(i) => ConnectN.play(state,i,piece).map(run)
-      case Failure(e) =>
+    val input = scala.io.StdIn.readLine()
+    Try(input.toInt) match {
+      case Success(i) =>
+        
+//        ConnectN.placePiece(state,i,piece) match {
+//          case Some(newState) => run(newState)
+//          case None =>
+//            println(s"Invalid column [$i]")
+//            run(state)
+//        }
+      case Failure(_) if input == "exit" =>
+        println("Thanks for playing")
+      case Failure(_) =>
         println("Invalid input, try again")
         run(state)
     }
@@ -46,5 +62,6 @@ object ConnectNASCII extends App {
     }
 
   println("Welcome to Connect N")
+  println("To exit type `exit`")
   run(GameState(Board(4,4)))
 }

@@ -5,10 +5,10 @@ import org.scalatest.{Matchers, WordSpec}
 
 class ConnectNSpec extends WordSpec with Matchers {
 
-  "play" should {
+  "placePiece" should {
     "drop red to bottom left" in {
       val state = GameState(Board(4,4))
-      val outState = play(state,0, Red)
+      val outState = placePiece(state,0, Red)
       outState shouldBe Some(state.copy(pieces = Seq(Coord(0,0) -> Red)))
     }
     "drop black on top of red" in {
@@ -68,7 +68,7 @@ class ConnectNSpec extends WordSpec with Matchers {
   private def makeMoves(state: GameState, moves: Seq[(Int,GamePiece)]): Option[GameState] = {
     def loop(s: GameState, m: List[(Int,GamePiece)]): Option[GameState] = m match {
       case Nil => Some(s)
-      case x :: xs => play(s,x._1,x._2).flatMap(loop(_,xs))
+      case x :: xs => placePiece(s,x._1,x._2).flatMap(loop(_,xs))
     }
     loop(state,moves.toList)
   }
