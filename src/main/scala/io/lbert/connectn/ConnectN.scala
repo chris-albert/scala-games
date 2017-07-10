@@ -57,8 +57,33 @@ object ConnectN {
     state.pieces.contains(coord -> piece)
 
   def getSlices(board: Board, coord: Coord): Seq[Seq[Coord]] = {
-    val x = (0 until board.height).map(r => Coord(coord.x,r))
-    val y = (0 until board.width).map(c => Coord(c, coord.y))
-    Seq(x,y)
+    val startCoords = getStartCoords(board, coord)
+    val sliceIterator = 0 until (board.inARow * 2) - 1
+
+    Seq(
+      sliceIterator.map(i => Coord(startCoords.up.x,startCoords.up.y + i)),
+      sliceIterator.map(i => Coord(startCoords.right.x + i, startCoords.right.y)),
+      sliceIterator.map(i => Coord(startCoords.upRight.x + i, startCoords.upRight.y + i)),
+      sliceIterator.map(i => Coord(startCoords.downRight.x + i, startCoords.downRight.y - i))
+    ).map(_.filter(isOffBoard(_,board))).filter(ifNotEnough(_,board))
   }
+
+  def ifNotEnough(coords: Seq[Coord], board: Board): Boolean =
+    coords.size >= board.inARow
+
+  def isOffBoard(coord: Coord, board: Board): Boolean =
+    coord.x >= 0 && coord.x < board.width && coord.y >= 0 && coord.y < board.height
+
+  case class StartCoords(right: Coord,
+                         up: Coord,
+                         upRight: Coord,
+                         downRight: Coord)
+
+  def getStartCoords(board: Board, coord: Coord): StartCoords =
+    StartCoords(
+      right = Coord(coord.x - board.inARow + 1, coord.y),
+      up = Coord(coord.x, coord.y - board.inARow + 1),
+      upRight = Coord(coord.x - board.inARow + 1, coord.y - board.inARow + 1),
+      downRight = Coord(coord.x - board.inARow + 1, coord.y + board.inARow - 1)
+    )
 }

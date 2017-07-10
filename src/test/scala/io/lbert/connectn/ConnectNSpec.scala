@@ -39,7 +39,18 @@ class ConnectNSpec extends WordSpec with Matchers {
       val coord = Coord(0,0)
       getSlices(board, coord) shouldBe Seq(
         Seq(Coord(0,0),Coord(0,1),Coord(0,2),Coord(0,3)),
-        Seq(Coord(0,0),Coord(1,0),Coord(2,0),Coord(3,0))
+        Seq(Coord(0,0),Coord(1,0),Coord(2,0),Coord(3,0)),
+        Seq(Coord(0,0),Coord(1,1),Coord(2,2),Coord(3,3))
+      )
+    }
+    "get harder slice" in {
+      val board = Board(7,7,4)
+      val coord = Coord(3,3)
+      getSlices(board, coord) shouldBe Seq(
+        Seq(Coord(3,0),Coord(3,1),Coord(3,2),Coord(3,3),Coord(3,4),Coord(3,5),Coord(3,6)),
+        Seq(Coord(0,3),Coord(1,3),Coord(2,3),Coord(3,3),Coord(4,3),Coord(5,3),Coord(6,3)),
+        Seq(Coord(0,0),Coord(1,1),Coord(2,2),Coord(3,3),Coord(4,4),Coord(5,5),Coord(6,6)),
+        Seq(Coord(0,6),Coord(1,5),Coord(2,4),Coord(3,3),Coord(4,2),Coord(5,1),Coord(6,0))
       )
     }
   }

@@ -40,13 +40,19 @@ object ConnectNASCII extends App {
     val input = scala.io.StdIn.readLine()
     Try(input.toInt) match {
       case Success(i) =>
-        
-//        ConnectN.placePiece(state,i,piece) match {
-//          case Some(newState) => run(newState)
-//          case None =>
-//            println(s"Invalid column [$i]")
-//            run(state)
-//        }
+        ConnectN.play(state,i,piece) match {
+          case InvalidMove(newState, _, _) =>
+            println("Invalid move, try again")
+            run(newState)
+          case NextMove(newState,_) =>
+            run(newState)
+          case GameOver(newState, winningPiece) =>
+            println(s"Game over, $winningPiece won")
+            val board = draw(newState,colorChars)
+            println()
+            println(board.mkString("\n"))
+            println()
+        }
       case Failure(_) if input == "exit" =>
         println("Thanks for playing")
       case Failure(_) =>
@@ -63,5 +69,5 @@ object ConnectNASCII extends App {
 
   println("Welcome to Connect N")
   println("To exit type `exit`")
-  run(GameState(Board(4,4)))
+  run(GameState(Board(6,7)))
 }
