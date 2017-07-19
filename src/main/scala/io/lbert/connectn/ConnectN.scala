@@ -1,5 +1,7 @@
 package io.lbert.connectn
 
+import io.lbert.Coord
+
 object ConnectN {
 
   sealed trait GamePiece {
@@ -17,8 +19,6 @@ object ConnectN {
   case class GameOver(state: GameState, winningPiece: GamePiece) extends MoveOutcome
 
   case class Board(height: Int, width: Int, inARow: Int = 4)
-
-  case class Coord(x: Int, y: Int)
 
   case class GameState(board: Board, pieces: Seq[(Coord,GamePiece)] = Seq())
 

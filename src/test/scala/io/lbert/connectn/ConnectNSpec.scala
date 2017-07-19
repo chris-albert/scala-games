@@ -1,5 +1,6 @@
 package io.lbert.connectn
 
+import io.lbert.Coord
 import io.lbert.connectn.ConnectN._
 import org.scalatest.{Matchers, WordSpec}
 
