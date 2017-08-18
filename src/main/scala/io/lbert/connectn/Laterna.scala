@@ -1,21 +1,14 @@
 package io.lbert.connectn
 
-import java.nio.charset.Charset
-import java.util
 import com.googlecode.lanterna.graphics.{BasicTextImage, TextImage}
 import com.googlecode.lanterna._
 import com.googlecode.lanterna.input.KeyType
-import com.googlecode.lanterna.screen.TerminalScreen
-import com.googlecode.lanterna.terminal.DefaultTerminalFactory
-import io.lbert.Coord
+import io.lbert.LaternaUI.TextChar
+import io.lbert.{Coord, LaternaUI}
+import io.lbert.LaternaUI._
 import io.lbert.connectn.ConnectN._
 
-object Laterna extends App {
-
-  val terminal = new DefaultTerminalFactory(System.out, System.in, Charset.forName("UTF8")).createTerminal()
-  val screen = new TerminalScreen(terminal)
-  val termSize = terminal.getTerminalSize
-  val textGraphics = screen.newTextGraphics()
+object Laterna extends App with LaternaUI {
 
   case class BoardChars(blank: TextChar = TextChar('O'),
                         red: TextChar = TextChar('O', TextColor.ANSI.RED),
@@ -23,13 +16,6 @@ object Laterna extends App {
                         separator: TextChar = TextChar('|'))
 
   val boardChars = BoardChars()
-
-  case class Pos(x: Int,y: Int) extends TerminalPosition(x,y)
-  case class Size(cols: Int, rows: Int) extends TerminalSize(cols,rows)
-  case class TextChar(char: Char,
-                      foregroundColor: TextColor = TextColor.ANSI.DEFAULT,
-                      backgroundColor: TextColor = TextColor.ANSI.DEFAULT)
-    extends TextCharacter(char,foregroundColor,backgroundColor,util.EnumSet.noneOf(classOf[SGR]))
 
   def getBoardImage(gameState: GameState): TextImage = {
     val width = gameState.board.width * 3 + gameState.board.width + 1
@@ -136,7 +122,7 @@ object Laterna extends App {
   private def nextPiece(state: GameState): GamePiece =
     state.pieces.lastOption.map(_._2).getOrElse(Red).getOther
 
-  def run(): Unit = {
+  run {
     val state = GameState(Board(6, 6))
     val board = drawBoard(state)
     val height = board.getSize.getRows + 6
@@ -147,8 +133,4 @@ object Laterna extends App {
     screen.refresh()
     readInput(0,state)
   }
-
-  screen.startScreen()
-  run()
-  screen.stopScreen()
 }

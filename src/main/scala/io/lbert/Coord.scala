@@ -23,8 +23,8 @@ object Coord {
 
     def right(c: Coord, i: Int = 1): Coord = Coord(c)(x = i)
     def left(c: Coord, i: Int = 1): Coord = Coord(c)(x = -i)
-    def up(c: Coord, i: Int = 1): Coord = Coord(c)(y = i)
-    def down(c: Coord, i: Int = 1): Coord = Coord(c)(y = -i)
+    def up(c: Coord, i: Int = 1): Coord = Coord(c)(y = -i)
+    def down(c: Coord, i: Int = 1): Coord = Coord(c)(y = i)
   }
 
   def surrounding(c: Coord): Seq[Coord] =
@@ -34,4 +34,7 @@ object Coord {
 
   def isSurrounding(c1: Coord, c2: Coord): Boolean =
     c1 != c2 && Math.abs(c1.x - c2.x) <= 1 && Math.abs(c1.y - c2.y) <= 1
+
+  def getSurrounding(coord: Coord, grid: Grid): Seq[Coord] =
+    grid.filter(isSurrounding(_,coord))
 }
