@@ -16,11 +16,11 @@ object UI extends App with LaternaUI {
   val chars = Chars()
 
   def getGridImage(game: Game): TextImage = {
-    val image = new BasicTextImage(Size(game.grid.col,game.grid.row))
+    val image = new BasicTextImage(Size(game.grid.width,game.grid.height))
     val bombHash = game.bombs.toSet
     val openHash = game.open.toSet
-    (0 until game.grid.row).map(row =>
-      (0 until game.grid.col).map{col =>
+    (0 until game.grid.height).map(row =>
+      (0 until game.grid.width).map{ col =>
         val coord = Coord(col, row)
         if(bombHash.contains(coord) && openHash.contains(coord)) {
           image.setCharacterAt(Pos(col,row),chars.bomb)
@@ -71,9 +71,9 @@ object UI extends App with LaternaUI {
     val game = Game.randomBombs(Game(Grid(24, 24)),100)
     val offset = Pos(3,2)
     screen.setCursorPosition(offset)
-    textGraphics.drawRectangle(Pos(0,0),Size(game.grid.col + 6, game.grid.row + 4),chars.border)
+    textGraphics.drawRectangle(Pos(0,0),Size(game.grid.width + 6, game.grid.height + 4),chars.border)
     drawGame(game)
-    readInput(game,Rectangle(offset,Size(game.grid.col,game.grid.row)))
+    readInput(game,Rectangle(offset,Size(game.grid.width,game.grid.height)))
   }
 
 

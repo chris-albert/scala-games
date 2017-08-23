@@ -49,7 +49,7 @@ object LaternaUI {
   case class TextImage(size: Size) extends BasicTextImage(size)
 
   object TextImage {
-    def apply(grid: Grid): TextImage = TextImage(Size(grid.col,grid.row))
+    def apply(grid: Grid): TextImage = TextImage(Size(grid.width,grid.height))
   }
 
   def inBoundsOption(bound: Rectangle, pos: Pos): Option[Pos] =

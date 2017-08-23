@@ -62,8 +62,8 @@ object Minesweeper {
         }
       }
       val bombs = loop(Set()).map{i =>
-        val row = Math.floor(i / game.grid.col).toInt
-        val col = i - (row * game.grid.col)
+        val row = Math.floor(i / game.grid.width).toInt
+        val col = i - (row * game.grid.width)
         Coord(col,row)
       }
       game.copy(bombs = bombs.toSeq)

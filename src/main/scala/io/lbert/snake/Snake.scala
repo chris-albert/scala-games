@@ -7,12 +7,18 @@ object Snake {
 
   case class State(grid: Grid, dir: Direction, snake: Seq[Coord], apples: Seq[Coord]) {
 
-    def nextState: Option[State] = {
-      val newSnake = snake.map(c => Direction.apply(c,dir,1))
-      if(newSnake.count(c => Grid.isBounded(grid,c)) == snake.length) {
-        Some(copy(snake = newSnake))
-      } else {
-        None
+    def move: Option[State] = {
+      if(snake.isEmpty) None
+      else {
+        val headMove = Direction.apply(snake.head, dir, 1)
+        if (Grid.isBounded(grid, headMove)) {
+          val newSnake =
+            if (snake.size == 1) Seq(headMove)
+            else headMove +: snake.init
+          Some(copy(snake = newSnake))
+        } else {
+          None
+        }
       }
     }
   }
